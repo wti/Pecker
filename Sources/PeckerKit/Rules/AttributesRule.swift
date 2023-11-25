@@ -18,12 +18,14 @@ struct AttributesRule: SourceCollectRule {
     /// If a function attributes contains the case in BlackListAttribute, skip.
     /// - Parameter node: FunctionDeclSyntax
     func skip(_ node: FunctionDeclSyntax) -> Bool {
-        if let attributesArray = node.attributes?.lazy.compactMap({ $0.tokens.map{ $0.text} }) {
-            for attributes in attributesArray {
-                for attribute in attributes {
-                    if BlackListAttribute.allCases.contains(where: { $0.rawValue == attribute }) {
-                        return true
-                    }
+        let attributesArray = node.attributes.lazy.compactMap(
+          { $0.tokens(viewMode: .fixedUp).map{ $0.text} }
+        )
+
+        for attributes in attributesArray {
+            for attribute in attributes {
+                if BlackListAttribute.allCases.contains(where: { $0.rawValue == attribute }) {
+                    return true
                 }
             }
         }
