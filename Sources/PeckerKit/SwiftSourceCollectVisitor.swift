@@ -11,6 +11,7 @@ class SwiftSourceCollectVisitor: SyntaxVisitor {
     init(context: CollectContext) {
         self.context = context
         self.rules = context.configuration.rules.compactMap { $0 as? SourceCollectRule }
+      super.init(viewMode: .fixedUp)
     }
     
     override func visit(_ node: ClassDeclSyntax) -> SyntaxVisitorContinueKind {
@@ -35,7 +36,7 @@ class SwiftSourceCollectVisitor: SyntaxVisitor {
     
     override func visit(_ node: FunctionDeclSyntax) -> SyntaxVisitorContinueKind {
         let ps = node.signature.input.parameterList.compactMap {
-            $0.firstName?.text
+            $0.firstName.text
         }
         let function = Function(name: node.identifier.text, parameters: ps)
         if let position = findLocation(syntax: node.identifier) {
@@ -88,7 +89,7 @@ class SwiftSourceCollectVisitor: SyntaxVisitor {
     }
     
     override func visit(_ node: ExtensionDeclSyntax) -> SyntaxVisitorContinueKind {
-        for token in node.extendedType.tokens {
+      for token in node.extendedType.tokens(viewMode: .fixedUp) {
             if let position = findLocation(syntax: token) {
                 let source = SourceDetail(name: token.text , sourceKind: .extension, location: position)
                 sourceExtensions[source.identifier] = source
@@ -120,10 +121,8 @@ extension SwiftSourceCollectVisitor {
     
     func findLocation(syntax: SyntaxProtocol) -> SourceLocation? {
         let position = context.sourceLocationConverter.location(for: syntax.positionAfterSkippingLeadingTrivia)
-        guard let line = position.line,
-            let column = position.column else {
-            return nil
-        }
+        let line = position.line
+        let column = position.column
         return SourceLocation(path: context.filePath, line: line, column: column, offset: position.offset)
     }
 }
