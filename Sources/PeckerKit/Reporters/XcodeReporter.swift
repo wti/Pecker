@@ -1,21 +1,22 @@
 import Foundation
 import SwiftSyntax
 
+// TODO: P1 non-functional pending swift-5.9 conversion (no DiagnosticEngine?)
 public struct XcodeReporter: Reporter {
     
     public func report(_ configuration: Configuration, sources: [SourceDetail]) {
-        let diagnosticEngine = makeDiagnosticEngine()
-        for source in sources {
-            let message = Diagnostic.Message(.warning, "Pecker: \(source.name) was never used; consider removing it")
-            diagnosticEngine.diagnose(message, location: source.location.ssLocation, actions: nil)
-        }
+      //        let diagnosticEngine = makeDiagnosticEngine()
+//        for source in sources {
+//            let message = Diagnostic.Message(.warning, "Pecker: \(source.name) was never used; consider removing it")
+//            diagnosticEngine.diagnose(message, location: source.location.ssLocation, actions: nil)
+//        }
     }
 }
 
-/// Makes and returns a new configured diagnostic engine.
-private func makeDiagnosticEngine() -> DiagnosticEngine {
-  let engine = DiagnosticEngine()
-  let consumer = PrintingDiagnosticConsumer()
-  engine.addConsumer(consumer)
-  return engine
-}
+///// Makes and returns a new configured diagnostic engine.
+//private func makeDiagnosticEngine() -> DiagnosticEngine {
+//  let engine = DiagnosticEngine()
+//  let consumer = PrintingDiagnosticConsumer()
+//  engine.addConsumer(consumer)
+//  return engine
+//}
