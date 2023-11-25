@@ -1,4 +1,5 @@
 import Foundation
+import SwiftParser
 import SwiftSyntax
 import TSCBasic
 
@@ -37,7 +38,8 @@ class SourceCollector {
         DispatchQueue.concurrentPerform(iterations: files.count) { index in
             let fileURL = files[index].asURL
             do {
-                let syntax = try SyntaxParser.parse(fileURL)
+              let source = try String(contentsOf: fileURL, encoding: String.Encoding.utf8 )
+              let syntax = Parser.parse(source: source)
                 let context = CollectContext(configuration: configuration,
                                          filePath: files[index].description,
                                          sourceFileSyntax: syntax)
